@@ -10,6 +10,8 @@
           </ul>
         </div>
       <% end %>  
+
+ <% user = task.user %>
         
       <div class="form-group">  
         <%= f.label :content, '内容' %>
@@ -21,7 +23,12 @@
         <%= f.text_field :status, class: 'form-control' %>
       </div>
       
-      <%= f.submit '投稿', class: 'btn btn-primary' %>
+      <div class="form-group">
+        <%= f.label :user_id, 'user_id' %>
+        <%= f.text_field :user_id, class: 'form-control' %>
+      </div>
+      
+      <%= f.submit '記入実行', class: 'btn btn-primary' %>
     <% end %>
   </div>
 </div>
