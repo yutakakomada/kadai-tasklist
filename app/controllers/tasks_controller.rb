@@ -2,25 +2,34 @@ class TasksController < ApplicationController
   before_action :set_task, only: [:show, :edit, :update, :destroy]
   
   def index
-    @tasks = Task.all.page(params[:page]).per(5)
+    # @task = current_user.tasks.build  
+    # @tasks = Task.all.page(params[:page]).per(5)
+    if logged_in?   
+      @user = current_user
+      @task = current_user.tasks.build  # form_for 用
+      @tasks = current_user.tasks.order('created_at DESC').page(params[:page]).per(5)  
+    end
+    render template: "toppages/index"
   end
   
   def show
-    redirect_to root_url
+    # redirect_to root_url
   end
   
   def new
-    @task = Task.new
+    # @task = Task.new
   end
   
   def create
     @task = current_user.tasks.build(task_params)  
+    # @tasks = Task.all.page(params[:page]).per(5)
+    @tasks = current_user.tasks.order('created_at DESC').page(params[:page]).per(5)
     if @task.save
       flash[:success] = 'Task が正常に作成されました'
-      redirect_to root_url
+      render template: "toppages/index"
     else
-      flash[:danger] = 'Task が作成されませんでした'
-      redirect_to root_url
+      flash.now[:danger] = 'Task が作成されませんでした'
+      render template: "toppages/index"
     end
   end
   
@@ -30,7 +39,7 @@ class TasksController < ApplicationController
   def update
     if @task.update(task_params)
       flash[:success] = 'Task は正常に更新されました'
-      redirect_to @task
+      render :edit
     else
       flash.now[:danger] = 'Task は更新されませんでした'
       render :edit
