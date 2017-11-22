@@ -39,7 +39,7 @@ class TasksController < ApplicationController
   def update
     if @task.update(task_params)
       flash[:success] = 'Task は正常に更新されました'
-      render :edit
+      redirect_to root_url
     else
       flash.now[:danger] = 'Task は更新されませんでした'
       render :edit
@@ -56,7 +56,11 @@ class TasksController < ApplicationController
   private
   
   def set_task
-    @task = Task.find(params[:id])
+    begin
+      @task = current_user.tasks.find(params[:id])  # form_for 用
+    rescue => e
+      redirect_to root_url
+    end
   end
   
   #Strong Parameter
